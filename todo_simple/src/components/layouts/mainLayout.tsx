@@ -1,24 +1,21 @@
-import { Outlet } from "react-router-dom";
 import { Header } from "../Header";
-import { Sidebar } from "../Sidebar";
+import { AppSidebar } from "../Sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export const MainLayout = () => {
   return (
-    <div className="app">
-      <Header />
-      <div className="main-container">
-        <Sidebar />
-        <main
-          className="content"
-          style={{
-            border: "2px solid red",
-            padding: "10px",
-            minHeight: "200px",
-          }}
-        >
-          <Outlet />
-        </main>
+    <SidebarProvider>
+      <div className="flex h-screen w-full">
+        {/* Sidebar */}
+        <div className="flex-shrink-0">
+          <AppSidebar />
+        </div>
+
+        {/* Main content area */}
+        <div className="flex-1 flex flex-col min-w-0">
+          <Header />
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
