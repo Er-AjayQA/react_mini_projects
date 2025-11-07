@@ -1,5 +1,5 @@
-import { Outlet } from "react-router-dom";
 import { SidebarTrigger } from "./ui/sidebar";
+import { BodyLayout } from "./layouts/bodyLayout";
 
 export const Header = () => {
   return (
@@ -13,19 +13,7 @@ export const Header = () => {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-6 overflow-auto">
-        <div
-          style={{
-            border: "2px solid red",
-            padding: "20px",
-            minHeight: "200px",
-            borderRadius: "8px",
-          }}
-          className="h-full"
-        >
-          <Outlet />
-        </div>
-      </main>
+      <BodyLayout />
     </div>
   );
 };
