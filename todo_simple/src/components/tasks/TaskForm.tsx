@@ -1,52 +1,30 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+// components/TaskForm.tsx
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { useTasks } from "../../context/tasksContext";
+
+interface FormData {
+  title: string;
+  description: string;
+}
 
 export const TaskForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    reset,
+  } = useForm<FormData>();
 
-  const [tasks, setTasks] = useState([]);
-  const [getTasks, setGetTasks] = useState(
-    localStorage.getItem("user_tasks") || null
-  );
+  const { addTask } = useTasks();
 
-  // Fetch Tasks From Local Storage
-  const fetchLocalStorageTasks = () => {
-    const task = localStorage.setItem("user_tasks", JSON.stringify(tasks));
-    setGetTasks(task);
+  const onSubmit = (formData: FormData) => {
+    addTask(formData.title, formData.description);
+    reset();
   };
-
-  // Set Tasks To Local Storage
-  const setLocalStorageTasks = () => {
-    localStorage.setItem("user_tasks", JSON.stringify(tasks));
-  };
-
-  // Add Task and Set to local Storage
-  const addTask = async (formData) => {
-    try {
-      const payload = { id: "", title: "", description: "" };
-      setTasks((prev) => [...prev, payload]);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchLocalStorageTasks();
-  }, [tasks.length]);
-
-  useEffect(() => {
-    setLocalStorageTasks();
-    console.log(getTasks);
-  }, [tasks.length]);
 
   return (
-    <form onSubmit={handleSubmit(addTask)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-3">
         <input
           type="text"
@@ -60,11 +38,13 @@ export const TaskForm = () => {
             required: "Title is required",
           })}
         />
+        {errors.title && (
+          <p className="text-red-500 text-sm">{errors.title.message}</p>
+        )}
 
         <textarea
           id="description"
           placeholder="Task description..."
-          autoFocus
           rows={5}
           className={`bg-gray-100 py-2 px-1 w-full border-none focus-within:outline-none rounded ${
             errors.description && "placeholder:text-red-500"
@@ -73,8 +53,13 @@ export const TaskForm = () => {
             required: "Description is required",
           })}
         ></textarea>
+        {errors.description && (
+          <p className="text-red-500 text-sm">{errors.description.message}</p>
+        )}
 
-        <Button className="cursor-pointer mt-5">Create Task</Button>
+        <Button type="submit" className="cursor-pointer mt-5">
+          Create Task
+        </Button>
       </div>
     </form>
   );
